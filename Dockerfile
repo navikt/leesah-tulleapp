@@ -4,6 +4,9 @@ RUN USER=root
 RUN mkdir app
 WORKDIR /app
 ADD . ./
+RUN apt-get install -y \
+    build-essential \
+    curl
 RUN cargo clean && \
     cargo build -vv --release
 
