@@ -51,7 +51,7 @@ async fn consume_and_print(brokers: &str, group_id: &str, topic: &str, cert: &st
         .set("ssl.key.pem", key)
         .set("ssl.ca.location", ca_path)
         //.set("statistics.interval.ms", "30000")
-        //.set("auto.offset.reset", "smallest")
+        .set("auto.offset.reset", "smallest")
         .set_log_level(RDKafkaLogLevel::Debug)
         .create_with_context(context)
         .expect("Consumer creation failed");
