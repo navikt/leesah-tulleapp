@@ -37,7 +37,7 @@ impl ConsumerContext for CustomContext {
 // A type alias with your custom consumer can be created for convenience.
 type LoggingConsumer = StreamConsumer<CustomContext>;
 
-async fn consume_and_print(brokers: &str, group_id: &str, topics: &[&str]) {
+async fn consume_and_print(brokers: &str, group_id: &str, topic: &str) {
     let context = CustomContext;
 
     let consumer: LoggingConsumer = ClientConfig::new()
@@ -53,7 +53,7 @@ async fn consume_and_print(brokers: &str, group_id: &str, topics: &[&str]) {
         .expect("Consumer creation failed");
 
     consumer
-        .subscribe(&topics.to_vec())
+        .subscribe(&vec![topic])
         .expect("Can't subscribe to specified topics");
 
     loop {
