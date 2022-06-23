@@ -4,6 +4,7 @@ use rdkafka::client::ClientContext;
 use rdkafka::config::{ClientConfig, RDKafkaLogLevel};
 use rdkafka::consumer::stream_consumer::StreamConsumer;
 use rdkafka::consumer::{CommitMode, Consumer, ConsumerContext, Rebalance};
+use rdkafka::producer::FutureProducer;
 use rdkafka::error::KafkaResult;
 use rdkafka::message::Message;
 use rdkafka::topic_partition_list::TopicPartitionList;
@@ -41,8 +42,25 @@ async fn consume_and_print(brokers: &str, group_id: &str, topic: &str, cert: &st
     let context = CustomContext;
 
     let consumer: LoggingConsumer = ClientConfig::new()
-        .set("group.id", group_id)
+        .set("group.id", group_id.clone())
+        .set("bootstrap.servers", brokers.clone())
+        .set("enable.partition.eof", "false")
+        .set("session.timeout.ms", "6000")
+        .set("enable.auto.commit", "true")
+        .set("security.protocol", "ssl")
+        .set("ssl.certificate.pem", cert.clone())
+        .set("ssl.key.pem", key.clone())
+        .set("ssl.ca.location", ca_path.clone())
+        //.set("statistics.interval.ms", "30000")
+        .set("auto.offset.reset", "smallest")
+        .set_log_level(RDKafkaLogLevel::Debug)
+        .create_with_context(context)
+        .expect("Consumer creation failed");
+
+    let producer: FutureProducer = ClientConfig::new()
         .set("bootstrap.servers", brokers)
+        .set("message.timeout.ms", "5000")
+        .set("group.id", group_id)
         .set("enable.partition.eof", "false")
         .set("session.timeout.ms", "6000")
         .set("enable.auto.commit", "true")
@@ -50,11 +68,8 @@ async fn consume_and_print(brokers: &str, group_id: &str, topic: &str, cert: &st
         .set("ssl.certificate.pem", cert)
         .set("ssl.key.pem", key)
         .set("ssl.ca.location", ca_path)
-        //.set("statistics.interval.ms", "30000")
-        .set("auto.offset.reset", "smallest")
-        .set_log_level(RDKafkaLogLevel::Debug)
-        .create_with_context(context)
-        .expect("Consumer creation failed");
+        .create()
+        .expect("Producer creation error");
 
     consumer
         .subscribe(&vec![topic])
