@@ -1,4 +1,4 @@
-FROM rust:1.61 as builder
+FROM rust:1.61-slim-buster as builder
 RUN USER=root
 
 RUN mkdir app
