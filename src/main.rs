@@ -1,5 +1,6 @@
 use std::env;
 
+use rdkafka::Offset::Offset;
 use rdkafka::client::ClientContext;
 use rdkafka::config::{ClientConfig, RDKafkaLogLevel};
 use rdkafka::consumer::stream_consumer::StreamConsumer;
@@ -62,7 +63,7 @@ async fn consume_and_print(brokers: &str, group_id: &str, topic: &str, cert: &st
         .create_with_context(context)
         .expect("Consumer creation failed");
 
-    consumer.seek(topic.clone(), 0, 0, Timeout.Never).unwrap();
+    consumer.seek(topic.clone(), 0, Offset(0), Timeout::Never).unwrap();
 
     let producer: FutureProducer = ClientConfig::new()
         .set("bootstrap.servers", brokers)

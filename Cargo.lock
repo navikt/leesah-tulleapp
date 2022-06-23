@@ -165,6 +165,7 @@ name = "leesah-tulleapp"
 version = "0.1.0"
 dependencies = [
  "rdkafka",
+ "serde",
  "tokio",
  "tracing",
  "tracing-subscriber",
