@@ -4,6 +4,7 @@ RUN USER=root
 RUN mkdir app
 WORKDIR /app
 ADD . ./
+RUN apt-get update -y
 RUN apt-get install -y \
     cmake
 RUN cargo clean && \
