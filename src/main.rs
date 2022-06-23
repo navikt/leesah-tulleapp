@@ -8,11 +8,16 @@ use rdkafka::producer::FutureProducer;
 use rdkafka::error::KafkaResult;
 use rdkafka::message::Message;
 use rdkafka::topic_partition_list::TopicPartitionList;
-use rdkafka::util::get_rdkafka_version;
+use rdkafka::util::{get_rdkafka_version, Timeout};
+use serde::{Serialize, Deserialize};
 
 use tracing::{warn, info};
 use tracing_subscriber::prelude::*;
 
+#[derive(Serialize, Deserialize)]
+struct Payload {
+
+}
 
 // A context can be used to change the behavior of producers and consumers by adding callbacks
 // that will be executed by librdkafka.
@@ -56,6 +61,8 @@ async fn consume_and_print(brokers: &str, group_id: &str, topic: &str, cert: &st
         .set_log_level(RDKafkaLogLevel::Debug)
         .create_with_context(context)
         .expect("Consumer creation failed");
+
+    consumer.seek(topic.clone(), 0, 0, Timeout.Never).unwrap();
 
     let producer: FutureProducer = ClientConfig::new()
         .set("bootstrap.servers", brokers)
