@@ -14,6 +14,9 @@ FROM debian:buster-slim
 ARG APP=/usr/src/app
 ENV APP_USER=appuser
 
+RUN apt-get update -y
+RUN apt-get install -y openssl
+
 RUN groupadd $APP_USER \
     && useradd -g $APP_USER $APP_USER \
     && mkdir -p ${APP}
