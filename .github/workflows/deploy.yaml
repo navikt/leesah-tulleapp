@@ -84,7 +84,7 @@ jobs:
           cache-from: type=gha,scope=version5
           cache-to: type=gha,scope=version5,mode=max
   deploy:
-    needs: [ set_version, build ]
+    needs: [ set-version, build ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -93,4 +93,4 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-gcp
           RESOURCE: nais.yml
-          IMAGE: ${{ needs.set_version.outputs.tag }}
+          IMAGE: ${{ needs.set-version.outputs.tag }}
