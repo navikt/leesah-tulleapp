@@ -1,5 +1,4 @@
-FROM gcr.io/distroless/static:nonroot
-COPY --chown=nonroot:nonroot ./leesah-tulleapp /app/
-EXPOSE 8999
+FROM debian:buster-slim
+COPY ./leesah-tulleapp /app/
 ENV RUST_LOG=info
 ENTRYPOINT ["/app/leesah-tulleapp"]

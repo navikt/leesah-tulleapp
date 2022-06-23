@@ -58,23 +58,16 @@ jobs:
       - name: Ensure cargo dirs exist
         run: |
           mkdir -p ~/.cargo/{git,registry}
-      - name: Test
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release --all-features
+      - name: Copy binary
         run: |
-          docker run --rm -t \
-              --mount type=bind,source=${{ github.workspace }},target=/volume \
-              --mount type=bind,source=$HOME/.cargo/registry,target=/root/.cargo/registry \
-              --mount type=bind,source=$HOME/.cargo/git,target=/root/.cargo/git \
-              clux/muslrust:stable \
-              cargo test --release -- --test-threads 1
-      - name: Build binary
-        run: |
-          docker run --rm -t \
-              --mount type=bind,source=${{ github.workspace }},target=/volume \
-              --mount type=bind,source=$HOME/.cargo/registry,target=/root/.cargo/registry \
-              --mount type=bind,source=$HOME/.cargo/git,target=/root/.cargo/git \
-              clux/muslrust:stable \
-              cargo build --release
-          cp target/x86_64-unknown-linux-musl/release/leesah-tulleapp .
+          cp target/release/leesah-tulleapp .
       - name: Build and publish Docker image
         uses: docker/build-push-action@v2
         with:
