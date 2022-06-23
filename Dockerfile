@@ -6,7 +6,7 @@ WORKDIR /app
 ADD . ./
 RUN apt-get update -y
 RUN apt-get install -y \
-    cmake c++
+    cmake g++ gcc
 RUN cargo clean && \
     cargo build -vv --release
 
