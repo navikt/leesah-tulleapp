@@ -37,7 +37,7 @@ impl ConsumerContext for CustomContext {
 // A type alias with your custom consumer can be created for convenience.
 type LoggingConsumer = StreamConsumer<CustomContext>;
 
-async fn consume_and_print(brokers: &str, group_id: &str, topic: &str, cert: &str, ca: &str, key: &str) {
+async fn consume_and_print(brokers: &str, group_id: &str, topic: &str, cert: &str, ca_path: &str, key: &str) {
     let context = CustomContext;
 
     let consumer: LoggingConsumer = ClientConfig::new()
@@ -49,7 +49,7 @@ async fn consume_and_print(brokers: &str, group_id: &str, topic: &str, cert: &st
         .set("security.protocol", "ssl")
         .set("ssl.certificate.pem", cert)
         .set("ssl.key.pem", key)
-        .set("ssl.ca.pem", ca)
+        .set("ssl.ca.location", ca_path)
         //.set("statistics.interval.ms", "30000")
         //.set("auto.offset.reset", "smallest")
         .set_log_level(RDKafkaLogLevel::Debug)
@@ -98,9 +98,9 @@ async fn main() {
     let group_id = env::var("QUIZRAPID_CONSUMER_GROUP").unwrap_or(format!("consumer-{app_name}-v1"));
     let cert = env::var("KAFKA_CERTIFICATE").expect("KAFKA_CERTIFICATE must be set");
     let key = env::var("KAFKA_PRIVATE_KEY").expect("KAFKA_PRIVATE_KEY must be set");
-    let ca = env::var("KAFKA_CA").expect("KAFKA_CA must be set");
+    let ca_path = env::var("KAFKA_CA_PATH").expect("KAFKA_CA_PATH must be set");
 
 
-    consume_and_print(&brokers, &group_id, &topics, &cert, &ca, &key).await
+    consume_and_print(&brokers, &group_id, &topics, &cert, &ca_path, &key).await
     
 }
