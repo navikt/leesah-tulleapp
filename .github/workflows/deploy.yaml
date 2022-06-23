@@ -7,7 +7,7 @@ on:
       - 'src/**'
       - 'Dockerfile'
       - 'Cargo.toml'
-      - '.github/workflows/build.yaml'
+      - '.github/workflows/deploy.yaml'
       - 'nais.yaml'
 env:
   IMAGE: ghcr.io/${{ github.repository }}
